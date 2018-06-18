@@ -1,0 +1,25 @@
+version: '3'
+services:
+  api:
+    image: nbaghiro/thrive:api_production
+    build: 
+      context: ../api
+      dockerfile: ./deploy/Dockerfile
+  web:
+    image: nbaghiro/thrive:web_production
+    build: 
+      context: ../web
+      dockerfile: ./deploy/Dockerfile
+    depends_on:
+      - api
+  nginx:
+    build: ./nginx
+    image: nbaghiro/thrive:nginx_production
+    ports:
+      - '80:80'
+      - '443:443'
+    links:
+      - api
+      - web
+volumes:
+  postgres-data:
